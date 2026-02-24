@@ -6,21 +6,25 @@ from datetime import datetime
 import concurrent.futures
 
 class LanguageCrawler:
-    def __init__(self, base_url, max_pages, lang_code, regex_pattern, headers=None, max_workers=10):
-        self.base_url = base_url
+    def __init__(self, base_urls, max_pages, lang_code, regex_pattern, headers=None, max_workers=10):
+        # Accept either a single URL or a list of start URLs
+        if isinstance(base_urls, (list, tuple)):
+            self.base_urls = list(base_urls)
+        else:
+            self.base_urls = [base_urls]
+
         self.max_pages = max_pages
         self.lang_code = lang_code
         self.headers = headers or {'User-Agent': 'Mozilla/5.0 (NLP Dataset Crawler)'}
-        self.max_workers = max_workers # Number of parallel threads
-        
+        self.max_workers = max_workers  # Number of parallel threads
+
+        # Global visited set to prevent duplicates across start URLs
         self.visited_urls = set()
-        self.urls_to_visit = [base_url]
         self.lang_pattern = re.compile(regex_pattern)
 
-    def is_valid_url(self, url):
-        parsed_base = urlparse(self.base_url)
+    def is_valid_url(self, url, base_netloc):
         parsed_url = urlparse(url)
-        return (parsed_base.netloc == parsed_url.netloc and url not in self.visited_urls)
+        return (parsed_url.netloc == base_netloc and url not in self.visited_urls)
 
     def extract_language_text(self, text):
         """Extract words matching the pattern, keep punctuation, clean spaces."""
@@ -69,46 +73,57 @@ class LanguageCrawler:
         return dataset, new_links
 
     def crawl(self):
-        """Start multi-threaded crawling."""
-        pages_crawled = 0
+        """Start multi-threaded crawling.
+
+        This implementation crawls up to `self.max_pages` pages per start URL
+        in `self.base_urls`. A global `visited_urls` set prevents duplicates
+        across multiple start URLs.
+        """
         final_dataset = []
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            futures = set()
+        # Process each start URL independently (limit applies per-start)
+        for start_url in self.base_urls:
+            pages_crawled = 0
+            urls_to_visit = [start_url]
+            parsed_base = urlparse(start_url)
+            base_netloc = parsed_base.netloc
 
-            # Loop until we hit max pages, or we run out of URLs and active threads
-            while (self.urls_to_visit or futures) and pages_crawled < self.max_pages:
-                
-                # Submit new URLs to the thread pool up to the max_workers limit
-                while self.urls_to_visit and len(futures) < self.max_workers and (pages_crawled + len(futures)) < self.max_pages:
-                    current_url = self.urls_to_visit.pop(0)
-                    
-                    if current_url not in self.visited_urls:
-                        self.visited_urls.add(current_url) # Mark visited immediately to prevent duplicates
-                        print(f"  -> Submitting: {current_url}")
-                        # Submit task to executor
-                        futures.add(executor.submit(self._process_url, current_url))
+            with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+                futures = set()
 
-                # If no futures are running, break out
-                if not futures:
-                    break
+                while (urls_to_visit or futures) and pages_crawled < self.max_pages:
 
-                # Wait for at least ONE thread to finish its job
-                done, futures = concurrent.futures.wait(futures, return_when=concurrent.futures.FIRST_COMPLETED)
+                    # Submit new URLs to the thread pool up to the max_workers limit
+                    while urls_to_visit and len(futures) < self.max_workers and (pages_crawled + len(futures)) < self.max_pages:
+                        current_url = urls_to_visit.pop(0)
 
-                # Process the completed threads
-                for future in done:
-                    pages_crawled += 1
-                    try:
-                        records, links = future.result()
-                        final_dataset.extend(records)
-                        
-                        # Add newly found valid links to our queue
-                        for link in links:
-                            if self.is_valid_url(link) and link not in self.urls_to_visit:
-                                self.urls_to_visit.append(link)
-                                
-                    except Exception as e:
-                        print(f"  -> Error processing thread result: {e}")
+                        if current_url not in self.visited_urls:
+                            self.visited_urls.add(current_url)  # Mark visited immediately to prevent duplicates
+                            print(f"  -> Submitting: {current_url}")
+                            futures.add(executor.submit(self._process_url, current_url))
+
+                    # If no futures are running, break out
+                    if not futures:
+                        break
+
+                    # Wait for at least one thread to finish its job
+                    done, futures = concurrent.futures.wait(futures, return_when=concurrent.futures.FIRST_COMPLETED)
+
+                    # Process the completed threads
+                    for future in done:
+                        pages_crawled += 1
+                        try:
+                            records, links = future.result()
+                            final_dataset.extend(records)
+
+                            # Add newly found valid links to our queue
+                            for link in links:
+                                if self.is_valid_url(link, base_netloc) and link not in urls_to_visit:
+                                    urls_to_visit.append(link)
+
+                        except Exception as e:
+                            print(f"  -> Error processing thread result: {e}")
+
+            print(f"  -> Finished start URL {start_url}: crawled {pages_crawled} pages")
 
         return final_dataset

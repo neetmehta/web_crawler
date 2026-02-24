@@ -6,10 +6,10 @@
   },
   "languages": {
     "gujarati": {
-      "enabled": true,
+      "enabled": false,
       "lang_code": "gu",
       "regex_pattern": "[\\u0A80-\\u0AFF\\s.,!?;:'\"()\\[\\]\\-—\\u0964\\u0965]+",
-      "base_url": "https://gu.wikipedia.org/wiki/%E0%AA%9D%E0%AB%82%E0%AA%B2%E0%AA%A4%E0%AA%BE_%E0%AA%AE%E0%AA%BF%E0%AA%A8%E0%AA%BE%E0%AA%B0%E0%AA%BE",
+      "base_urls": ["https://gu.wikipedia.org/wiki/%E0%AA%9D%E0%AB%82%E0%AA%B2%E0%AA%A4%E0%AA%BE_%E0%AA%AE%E0%AA%BF%E0%AA%A8%E0%AA%BE%E0%AA%B0%E0%AA%BE"],
       "max_pages": 500,
       "output_file": "data/gujarati_corpus.jsonl"
     },
@@ -17,15 +17,15 @@
       "enabled": false,
       "lang_code": "hi",
       "regex_pattern": "[\\u0900-\\u097F\\s.,!?;:'\"()\\[\\]\\-—\\u0964\\u0965]+",
-      "base_url": "https://hi.wikipedia.org/wiki/%E0%A4%AA%E0%A5%8D%E0%A4%B0%E0%A4%BE%E0%A4%95%E0%A5%83%E0%A4%A4%E0%A4%BF%E0%A4%95_%E0%A4%AD%E0%A4%BE%E0%A4%B7%E0%A4%BE_%E0%A4%B8%E0%A4%82%E0%A4%B8%E0%A4%BE%E0%A4%A7%E0%A4%A8",
+      "base_urls": ["https://hi.wikipedia.org/wiki/%E0%A4%AA%E0%A5%8D%E0%A4%B0%E0%A4%BE%E0%A4%95%E0%A5%83%E0%A4%A4%E0%A4%BF%E0%A4%95_%E0%A4%AD%E0%A4%BE%E0%A4%B7%E0%A4%BE_%E0%A4%B8%E0%A4%82%E0%A4%B8%E0%A4%BE%E0%A4%A7%E0%A4%A8"],
       "max_pages": 100,
       "output_file": "data/hindi_corpus.jsonl"
     },
     "english": {
-      "enabled": false,
+      "enabled": true,
       "lang_code": "en",
       "regex_pattern": "[a-zA-Z0-9\\s.,!?;:'\"()\\[\\]\\-—]+",
-      "base_url": "https://timesofindia.indiatimes.com/india",
+      "base_urls": ["https://timesofindia.indiatimes.com/business", "https://economictimes.indiatimes.com/news/politics", "https://www.thehindu.com/"],
       "max_pages": 50,
       "output_file": "data/english_corpus.jsonl"
     }

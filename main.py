@@ -27,14 +27,16 @@ def main():
         ensure_output_dir(output_file)
         
         # Initialize the crawler dynamically based on the JSON config
+        # Support both `base_url` (single) and `base_urls` (list) in config
+        base_urls = settings.get("base_urls") or ([settings.get("base_url")] if settings.get("base_url") else [])
 
         crawler = LanguageCrawler(
-            base_url=settings["base_url"],
+            base_urls=base_urls,
             max_pages=settings["max_pages"],
             lang_code=settings["lang_code"],
             regex_pattern=settings["regex_pattern"],
             headers={"User-Agent": global_settings.get("user_agent")},
-            max_workers=global_settings.get("max_workers", 10) # Added max_workers here
+            max_workers=global_settings.get("max_workers", 10)
         )
         
         # Run extraction
