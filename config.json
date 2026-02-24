@@ -1,15 +1,16 @@
 {
-  "global_settings": {
+"global_settings": {
     "timeout": 10,
-    "user_agent": "Mozilla/5.0 (Multilingual NLP Dataset Crawler)"
+    "user_agent": "Mozilla/5.0 (Multilingual NLP Dataset Crawler)",
+    "max_workers": 15
   },
   "languages": {
     "gujarati": {
-      "enabled": false,
+      "enabled": true,
       "lang_code": "gu",
       "regex_pattern": "[\\u0A80-\\u0AFF\\s.,!?;:'\"()\\[\\]\\-—\\u0964\\u0965]+",
       "base_url": "https://gu.wikipedia.org/wiki/%E0%AA%9D%E0%AB%82%E0%AA%B2%E0%AA%A4%E0%AA%BE_%E0%AA%AE%E0%AA%BF%E0%AA%A8%E0%AA%BE%E0%AA%B0%E0%AA%BE",
-      "max_pages": 50,
+      "max_pages": 500,
       "output_file": "data/gujarati_corpus.jsonl"
     },
     "hindi": {
@@ -21,11 +22,11 @@
       "output_file": "data/hindi_corpus.jsonl"
     },
     "english": {
-      "enabled": true,
+      "enabled": false,
       "lang_code": "en",
       "regex_pattern": "[a-zA-Z0-9\\s.,!?;:'\"()\\[\\]\\-—]+",
       "base_url": "https://timesofindia.indiatimes.com/india",
-      "max_pages": 5,
+      "max_pages": 50,
       "output_file": "data/english_corpus.jsonl"
     }
   }
