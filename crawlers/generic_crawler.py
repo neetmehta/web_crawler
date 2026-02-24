@@ -65,7 +65,7 @@ class LanguageCrawler:
                 filtered_text = self.extract_language_text(para)
                 
                 # Check if text exists AND has more than 3 words (filters out stray menu words)
-                if filtered_text and len(filtered_text.split()) > 3:
+                if filtered_text and len(filtered_text.split()) > 20:
                     record = {
                         "url": current_url,
                         "timestamp": datetime.utcnow().isoformat() + "Z",
