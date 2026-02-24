@@ -1,0 +1,24 @@
+{
+  "global_settings": {
+    "timeout": 10,
+    "user_agent": "Mozilla/5.0 (Multilingual NLP Dataset Crawler)"
+  },
+  "languages": {
+    "gujarati": {
+      "enabled": true,
+      "lang_code": "gu",
+      "regex_pattern": "[\\u0A80-\\u0AFF\\s.,!?;:'\"()\\[\\]\\-—\\u0964\\u0965]+",
+      "base_url": "https://gujarativishwakosh.org/",
+      "max_pages": 5,
+      "output_file": "data/gujarati_corpus.jsonl"
+    },
+    "hindi": {
+      "enabled": false,
+      "lang_code": "hi",
+      "regex_pattern": "[\\u0900-\\u097F\\s.,!?;:'\"()\\[\\]\\-—\\u0964\\u0965]+",
+      "base_url": "https://hi.wikipedia.org/",
+      "max_pages": 5,
+      "output_file": "data/hindi_corpus.jsonl"
+    }
+  }
+}
