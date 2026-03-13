@@ -23,7 +23,7 @@ def upload_dataset():
 
     # 5. Push the dataset to the Hugging Face Hub
     # REPLACE 'your-hf-username/gujarati-news-corpus' with your actual HF username and desired dataset name
-    repo_id = "your-hf-username/gujarati-news-corpus"
+    repo_id = "neetmehta/GujaratiTextDataset"
     
     print(f"Pushing dataset to Hugging Face Hub at {repo_id}...")
     dataset.push_to_hub(repo_id)
