@@ -4,6 +4,7 @@ import re
 from urllib.parse import urljoin, urlparse
 from datetime import datetime
 import concurrent.futures
+import trafilatura
 
 class LanguageCrawler:
     def __init__(self, base_urls, max_pages, lang_code, regex_pattern, headers=None, max_workers=10):
@@ -33,7 +34,7 @@ class LanguageCrawler:
         return re.sub(r'[ \t]+', ' ', extracted_text).strip()
 
     def _process_url(self, url):
-        """Worker function to fetch and parse a single URL."""
+        """Worker function using Trafilatura for smart extraction."""
         dataset = []
         new_links = []
         
@@ -41,21 +42,35 @@ class LanguageCrawler:
             response = requests.get(url, headers=self.headers, timeout=10)
             response.raise_for_status() 
         except requests.RequestException as e:
-            print(f"  -> Failed to fetch {url}: {e}")
             return dataset, new_links
 
+        # 1. Extract links using BeautifulSoup (Trafilatura is for text, BS4 is better for links)
         soup = BeautifulSoup(response.content, 'html.parser')
+        for a_tag in soup.find_all('a', href=True):
+            next_url = urljoin(url, a_tag['href']).split('#')[0] 
+            new_links.append(next_url)
 
-        # Strip out noise completely
-        for noise_element in soup(["script", "style", "nav", "footer", "header", "aside"]):
-            noise_element.extract()
+        # 2. SMART TEXT EXTRACTION
+        # Trafilatura automatically ignores menus, footers, and cookie banners!
+        downloaded = response.content
+        extracted_text = trafilatura.extract(
+            downloaded, 
+            include_comments=False, # Ignore user comments
+            include_tables=False,   # Ignore tabular data
+            include_links=False     # Strip out link texts
+        )
 
-        raw_text = soup.get_text(separator='\n', strip=True)
-        paragraphs = re.split(r'\n+', raw_text)
+        # If trafilatura couldn't find a main article, skip the page
+        if not extracted_text:
+            return dataset, new_links
+
+        # 3. Process the cleanly extracted article paragraphs
+        paragraphs = re.split(r'\n+', extracted_text)
         
-        # Extract Text
         for para in paragraphs:
             filtered_text = self.extract_language_text(para)
+            
+            # Keep the 20-word minimum as a final safety net
             if filtered_text and len(filtered_text.split()) > 20:
                 record = {
                     "url": url,
@@ -65,13 +80,8 @@ class LanguageCrawler:
                 }
                 dataset.append(record)
 
-        # Extract Links
-        for a_tag in soup.find_all('a', href=True):
-            next_url = urljoin(url, a_tag['href']).split('#')[0] 
-            new_links.append(next_url)
-
         return dataset, new_links
-
+    
     def crawl(self):
         """Start multi-threaded crawling.
 
