@@ -24,7 +24,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           # Installing required packages for web crawling and Hugging Face integration
-          pip install requests beautifulsoup4 datasets huggingface_hub
+          pip install requests beautifulsoup4 datasets huggingface_hub trafilatura
 
       - name: Run Web Crawler
         run: |
