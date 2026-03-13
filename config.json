@@ -9,7 +9,7 @@
       "enabled": true,
       "lang_code": "gu",
       "regex_pattern": "[\\u0A80-\\u0AFF\\s.,!?;:'\"()\\[\\]\\-—\\u0964\\u0965]+",
-      "base_urls": ["https://gu.wikipedia.org/wiki/%E0%AA%AD%E0%AB%8C%E0%AA%A4%E0%AA%BF%E0%AA%95%E0%AA%B6%E0%AA%BE%E0%AA%B8%E0%AB%8D%E0%AA%A4%E0%AB%8D%E0%AA%B0","https://gu.wikipedia.org/wiki/%E0%AA%AD%E0%AA%BE%E0%AA%B0%E0%AA%A4_%E0%AA%B8%E0%AA%B0%E0%AA%95%E0%AA%BE%E0%AA%B0","https://gu.wikipedia.org/wiki/%E0%AA%95%E0%AA%B2%E0%AA%BE"],
+      "base_urls": ["https://gujarati.indianexpress.com/sports","https://www.loksattanews.co.in/category/international","https://gujarati.abplive.com/news/business","https://chitralekha.com/category/features/", "https://www.kutchmitradaily.com/", "https://www.divyabhaskar.co.in/","https://www.gujaratsamachar.com/", "https://www.bbc.com/gujarati"],
       "max_pages": 50,
       "output_file": "data/gujarati_corpus.jsonl"
     },
@@ -25,9 +25,9 @@
       "enabled": false,
       "lang_code": "en",
       "regex_pattern": "[a-zA-Z0-9\\s.,!?;:'\"()\\[\\]\\-—]+",
-      "base_urls": ["https://carla.readthedocs.io/en/latest/","https://docs.pytorch.org/docs/stable/index.html"],
-      "max_pages": 1000,
-      "output_file": "data/gujarati_corpus.jsonl"
+      "base_urls": ["https://timesofindia.indiatimes.com/"],
+      "max_pages": 10,
+      "output_file": "data/english_corpus.jsonl"
     }
   }
 }
