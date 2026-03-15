@@ -9,7 +9,7 @@
       "enabled": true,
       "lang_code": "gu",
       "regex_pattern": "[\\u0A80-\\u0AFF\\s.,!?;:'\"()\\[\\]\\-—\\u0964\\u0965]+",
-      "base_urls": ["https://gujarati.webdunia.com/"],
+      "base_urls": ["https://gujarati.indianexpress.com/sports","https://www.loksattanews.co.in/category/international","https://gujarati.abplive.com/news/business","https://chitralekha.com/category/features/", "https://www.kutchmitradaily.com/", "https://www.divyabhaskar.co.in/","https://www.gujaratsamachar.com/", "https://www.bbc.com/gujarati", "https://gujarati.webdunia.com/"],
       "max_pages": 50,
       "output_file": "data/gujarati_corpus.jsonl"
     },
